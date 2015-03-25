@@ -32,6 +32,7 @@ and if the name do notmatch it will skip the evaluation for that file. In
 in the name of the audio file itself, according to the following format:
 
 FORMAT: Artist Name - Title of the Song = Key annotation < genre > DATASET.wav
+
 EXAMPLE: Audio Junkies - Bird On A Wire = F minor < edm > KF1000.wav
 
 Besides common python libraries, this script depends on a module named
