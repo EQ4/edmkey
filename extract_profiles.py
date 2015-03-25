@@ -83,7 +83,7 @@ else:
 import os
 import essentia as e
 import essentia.standard as estd
-from keymods.keytools import *
+from key_tools import *
 import matplotlib.pyplot as plt
 """"
 # create directory to write the results with an unique time id:

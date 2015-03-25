@@ -27,7 +27,7 @@ Besides common python libraries, this script depends on a module named
 analysis_mode = 'title' # {'txt', 'title'}
 
 if analysis_mode == 'title':
-    collection     = ['KF100','KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60'] # ['KF100', 'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60'] 
+    collection     = ['KF100']#,'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60'] # ['KF100', 'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60'] 
     genre          = ['edm'] # ['edm', 'non-edm']
     modality       = ['minor', 'major'] # ['major', 'minor']
     limit_analysis = 0 # Limit analysis to N random tracks. 0 = all samples matching above criteria.
@@ -106,7 +106,7 @@ else:
 import os
 import essentia as e
 import essentia.standard as estd
-from keymods.keytools import *
+from key_tools import *
 from random import sample
 from time import time as tiempo
 

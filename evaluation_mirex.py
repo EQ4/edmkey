@@ -21,7 +21,7 @@ except:
     sys.exit()
 
 import os
-from keymods.keytools import *
+from key_tools import *
 
 
 # retrieve folder data
