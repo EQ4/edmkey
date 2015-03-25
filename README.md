@@ -1,6 +1,5 @@
 # edmkey
 Python scripts for automatic key detection in EDM
-==================================================
 
 This repository provides scripts for key detection and its evaluation. 
 It also contains a program to automatically extract key-profiles from a corpus.
