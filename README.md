@@ -31,8 +31,8 @@ and if the name do notmatch it will skip the evaluation for that file. In
 'title' mode, the program looks for the ground-truth annotation embedded
 in the name of the audio file itself, according to the following format:
 
-FORMAT:  'Artist Name - Title of the Song = Key annotation < genre > DATASET.wav'
-EXAMPLE: 'Audio Junkies - Bird On A Wire = F minor < edm > KF1000.wav'
+FORMAT: Artist Name - Title of the Song = Key annotation < genre > DATASET.wav
+EXAMPLE: Audio Junkies - Bird On A Wire = F minor < edm > KF1000.wav
 
 Besides common python libraries, this script depends on a module named
 "key_tools.py" which is provided along this file.
