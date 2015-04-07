@@ -27,7 +27,7 @@ Besides common python libraries, this script depends on a module named
 analysis_mode = 'title' # {'txt', 'title'}
 
 if analysis_mode == 'title':
-    collection     = ['KF100']#,'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60'] # ['KF100', 'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60'] 
+    collection     = ['KF100','KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60'] # ['KF100', 'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60'] 
     genre          = ['edm'] # ['edm', 'non-edm']
     modality       = ['minor', 'major'] # ['major', 'minor']
     limit_analysis = 0 # Limit analysis to N random tracks. 0 = all samples matching above criteria.
@@ -43,6 +43,7 @@ shift_spectrum       = True
 verbose              = True
 confusion_matrix     = True
 results_to_file      = True
+results_to_csv       = True
 confidence_threshold = 1
 # global:
 sample_rate          = 44100
@@ -51,7 +52,7 @@ jump_frames          = 4 # 1 = analyse every frame; 2 = analyse every other fram
 hop_size             = window_size * jump_frames
 window_type          = 'hann'
 min_frequency        = 25
-max_frequency        = 3500
+max_frequency        = 3500   
 # spectral peaks:
 magnitude_threshold  = 0.0001
 max_peaks            = 60
@@ -72,7 +73,7 @@ use_polyphony        = False
 num_harmonics        = 15  # when use_polyphony == True
 slope                = 0.2 # when use_polyphony == True
 
-# /////////////////////////////////////////////////////////////////////////////////////////
+# ////////////////////////////////////////////////////////////////////////////
 
 # IO
 # ==
@@ -116,6 +117,10 @@ if results_to_file:
     wd = os.getcwd()
     temp_folder = wd + '/KeyDetection_'+uniqueTime
     os.mkdir(temp_folder)
+    if results_to_csv:
+        import csv
+        csvFile = open(temp_folder + '/_estimation&hpcp.csv', 'w')
+        lineWriter = csv.writer(csvFile, delimiter=',')
 
 # retrieve files and filenames according to the desired settings:
 if analysis_mode == 'title':
@@ -220,6 +225,12 @@ for item in analysis_files:
     estimation = key(chroma.tolist())
     result = estimation[0] + ' ' + estimation[1]
     confidence = estimation[2]
+    if results_to_csv:
+        ground_truth = item[item.find(' = ')+3:item.rfind(' < ')]
+        title = item[:item.rfind(' = ')]
+        chroma = list(chroma)
+        lineWriter.writerow([title, ground_truth, chroma, result])
+        
     # MIREX EVALUATION:
     # ================
     if analysis_mode == 'title':
@@ -257,6 +268,10 @@ for item in analysis_files:
     if results_to_file:
         with open(temp_folder + '/' + item[:-3]+'txt', 'w') as textfile:
             textfile.write(result)
+            textfile.close()
+            
+if results_to_csv:
+    csvFile.close()
     
 print len(mirex_scores), "files analysed.\n"
 if confusion_matrix:
@@ -273,8 +288,8 @@ evaluation_results = mirex_evaluation(mirex_scores)
 # WRITE INFO TO FILE
 # ==================
 if results_to_file:
-    settings = "SETTINGS\n========\nAvoid edges ('%' of duration that is disregarded at the beginning and end (0 = full track)) = "+str(avoid_edges)+"\nfirst N secs = "+str(first_n_secs)+"\nshift spectrum to fit tempered scale = "+str(shift_spectrum)+"\nspectral whitening = "+str(spectral_whitening)+"\nsample rate = "+str(sample_rate)+"\nwindow size = "+str(window_size)+"\nhop size = "+str(hop_size)+"\nmagnitude threshold = "+str(magnitude_threshold)+"\nminimum frequency = "+str(min_frequency)+"\nmaximum frequency = "+str(max_frequency)+"\nmaximum peaks = "+str(max_peaks)+"\nband preset = "+str(band_preset)+"\nsplit frequency = "+str(split_frequency)+"\nharmonics = "+str(harmonics)+"\nnon linear = "+str(non_linear)+"\nnormalize = "+str(normalize)+"\nreference frequency = "+str(reference_frequency)+"\nhpcp size = "+str(hpcp_size)+"\nweigth type = "+weight_type+"\nweight window size in semitones = "+str(weight_window_size)+"\nharmonics key = "+str(num_harmonics)+"\nslope = "+str(slope)+"\nprofile = "+profile_type+"\npolyphony = "+str(use_polyphony)+"\nuse three chords = "+str(use_three_chords)
-    results_for_file = "\nEVALUATION RESULTS\n==================\nCorrect: "+str(evaluation_results[0])+"\nFifth:  "+str(evaluation_results[1])+"\nRelative: "+str(evaluation_results[2])+"\nParallel: "+str(evaluation_results[3])+"\nError: "+str(evaluation_results[4])+"\nWeighted: "+str(evaluation_results[5])
+    settings = "SETTINGS\n========\nAvoid edges ('%' of duration disregarded at both ends (0 = complete)) = "+str(avoid_edges)+"\nfirst N secs = "+str(first_n_secs)+"\nshift spectrum to fit tempered scale = "+str(shift_spectrum)+"\nspectral whitening = "+str(spectral_whitening)+"\nsample rate = "+str(sample_rate)+"\nwindow size = "+str(window_size)+"\nhop size = "+str(hop_size)+"\nmagnitude threshold = "+str(magnitude_threshold)+"\nminimum frequency = "+str(min_frequency)+"\nmaximum frequency = "+str(max_frequency)+"\nmaximum peaks = "+str(max_peaks)+"\nband preset = "+str(band_preset)+"\nsplit frequency = "+str(split_frequency)+"\nharmonics = "+str(harmonics)+"\nnon linear = "+str(non_linear)+"\nnormalize = "+str(normalize)+"\nreference frequency = "+str(reference_frequency)+"\nhpcp size = "+str(hpcp_size)+"\nweigth type = "+weight_type+"\nweight window size in semitones = "+str(weight_window_size)+"\nharmonics key = "+str(num_harmonics)+"\nslope = "+str(slope)+"\nprofile = "+profile_type+"\npolyphony = "+str(use_polyphony)+"\nuse three chords = "+str(use_three_chords)
+    results_for_file = "\n\nEVALUATION RESULTS\n==================\nCorrect: "+str(evaluation_results[0])+"\nFifth:  "+str(evaluation_results[1])+"\nRelative: "+str(evaluation_results[2])+"\nParallel: "+str(evaluation_results[3])+"\nError: "+str(evaluation_results[4])+"\nWeighted: "+str(evaluation_results[5])
     write_to_file = open(temp_folder + '/_SUMMARY.txt', 'w')
     write_to_file.write(settings)
     write_to_file.write(results_for_file)
