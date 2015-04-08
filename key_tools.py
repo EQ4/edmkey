@@ -25,7 +25,7 @@ name2class = {'B#':0,'C':0,
               'A#':10,'Bb':10,
               'B':11,'Cb':11,
               'silence': 12}
-            
+
 mode2num = {'minor':0,
             'min':0,
             'aeolian': 0,
@@ -39,7 +39,6 @@ mode2num = {'minor':0,
             'lyd': 1,
             'None': 1}
 
-
 # Functions
 # =========
 
@@ -48,7 +47,7 @@ def name_to_class(key):
     return name2class[key]
 
 
-    
+
 def mode_to_num(mode):
     "converts a chord type into an arbitrary numeric value (maj = 1, min = 0)"
     return mode2num[mode]
@@ -110,8 +109,8 @@ def mirex_evaluation(list_with_weighted_results):
     print "Error   ", error
     print "Weighted", weighted
     return [correct, fifth, relative, parallel, error, weighted]
-    
-    
+
+
 
 def shift_vector(hpcp, hpcp_size=12):
     "shifts the spectrum to the nearest tempered bin"
@@ -125,8 +124,7 @@ def shift_vector(hpcp, hpcp_size=12):
     shiftDistance = 0
     if max_val_index > (tuning_resolution / 2):
         shiftDistance = tuning_resolution - max_val_index
-    else: 
+    else:
         shiftDistance = max_val_index
     hpcp = np.roll(hpcp, shiftDistance)
     return hpcp
-

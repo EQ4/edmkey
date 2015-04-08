@@ -2,14 +2,14 @@
 # -*- coding: UTF-8 -*-
 
 """This script estimates the key of the songs contained in a folder,
-and performs an evaluation of its results according to the MIREX 
-standard. 
+and performs an evaluation of its results according to the MIREX
+standard.
 There are two modes of operation: 'txt' and 'title'.
 In 'txt mode, the program expects a first argument indicating the route
 to a folder containing the audio to be analysed, and a second argument
 containing the route to the ground truth annotation as individual text
 files. The program expects that the file names of both the audio and the
-annotations are equal (except for the extension), and if the name do not 
+annotations are equal (except for the extension), and if the name do not
 match it will skip the evaluation for that file.
 In 'title' mode, the program looks for the ground-truth annotation embedded
 in the name of the audio file itself, according to the following format:
@@ -27,7 +27,7 @@ Besides common python libraries, this script depends on a module named
 analysis_mode = 'title' # {'txt', 'title'}
 
 if analysis_mode == 'title':
-    collection     = ['KF100','KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60'] # ['KF100', 'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60'] 
+    collection     = ['GSANG']# ['KF100', 'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60'] # ['KF100', 'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60']
     genre          = ['edm'] # ['edm', 'non-edm']
     modality       = ['minor', 'major'] # ['major', 'minor']
     limit_analysis = 0 # Limit analysis to N random tracks. 0 = all samples matching above criteria.
@@ -52,7 +52,7 @@ jump_frames          = 4 # 1 = analyse every frame; 2 = analyse every other fram
 hop_size             = window_size * jump_frames
 window_type          = 'hann'
 min_frequency        = 25
-max_frequency        = 3500   
+max_frequency        = 3500
 # spectral peaks:
 magnitude_threshold  = 0.0001
 max_peaks            = 60
@@ -86,7 +86,7 @@ if analysis_mode == 'txt':
     except:
         print "ERROR! In 'txt' mode you should provide two arguments:"
         print "filename.py <route to audio> <route to ground-truth annotations>\n"
-        sys.exit()   
+        sys.exit()
 elif analysis_mode == 'title':
     try:
         audio_folder = sys.argv[1]
@@ -145,13 +145,13 @@ if analysis_mode == 'title':
         print "taking", limit_analysis, "random samples...\n"
 else:
     analysis_files = os.listdir(audio_folder)
-    if '.DS_Store' in analysis_files: 
+    if '.DS_Store' in analysis_files:
         analysis_files.remove('.DS_Store')
     print len(analysis_files), '\nsongs in folder.\n'
     groundtruth_files = os.listdir(groundtruth_folder)
-    if '.DS_Store' in groundtruth_files: 
+    if '.DS_Store' in groundtruth_files:
         groundtruth_files.remove('.DS_Store')
-    
+
 
 # ANALYSIS
 # ========
@@ -161,28 +161,28 @@ if verbose:
 
 if confusion_matrix:
     matrix = 24 * 24 * [0]
-    
+
 mirex_scores = []
 for item in analysis_files:
     # INSTANTIATE ESSENTIA ALGORITHMS
     # ===============================
     loader = estd.MonoLoader(filename=audio_folder+'/'+item,
     						 sampleRate=sample_rate)
-    cut    = estd.FrameCutter(frameSize=window_size, 
+    cut    = estd.FrameCutter(frameSize=window_size,
                               hopSize=hop_size)
     window = estd.Windowing(size=window_size,
                             type=window_type)
     rfft   = estd.Spectrum(size=window_size)
-    sw     = estd.SpectralWhitening(maxFrequency=max_frequency, 
+    sw     = estd.SpectralWhitening(maxFrequency=max_frequency,
                                     sampleRate=sample_rate)
     speaks = estd.SpectralPeaks(magnitudeThreshold=magnitude_threshold,
                                 maxFrequency=max_frequency,
                                 minFrequency=min_frequency,
                                 maxPeaks=max_peaks,
                                 sampleRate=sample_rate)
-    hpcp   = estd.HPCP(bandPreset=band_preset, 
-                       harmonics=harmonics, 
-                       maxFrequency=max_frequency, 
+    hpcp   = estd.HPCP(bandPreset=band_preset,
+                       harmonics=harmonics,
+                       maxFrequency=max_frequency,
                        minFrequency=min_frequency,
                        nonLinear=non_linear,
                        normalized=normalize,
@@ -192,11 +192,11 @@ for item in analysis_files:
                        splitFrequency=split_frequency,
                        weightType=weight_type,
                        windowSize=weight_window_size)
-    key    = estd.Key(numHarmonics=num_harmonics, 
+    key    = estd.Key(numHarmonics=num_harmonics,
                       pcpSize=hpcp_size,
                       profileType=profile_type,
-                      slope=slope, 
-                      usePolyphony=use_polyphony, 
+                      slope=slope,
+                      usePolyphony=use_polyphony,
                       useThreeChords=use_three_chords)
     # ACTUAL ANALYSIS
     # ===============
@@ -205,7 +205,7 @@ for item in analysis_files:
     if first_n_secs > 0:
         if duration > (first_n_secs * sample_rate):
             audio = audio[:first_n_secs * sample_rate]
-            duration = len(audio)    
+            duration = len(audio)
     if avoid_edges > 0:
         initial_sample = (avoid_edges * duration) / 100
         final_sample = duration - initial_sample
@@ -225,12 +225,9 @@ for item in analysis_files:
     estimation = key(chroma.tolist())
     result = estimation[0] + ' ' + estimation[1]
     confidence = estimation[2]
-    if results_to_csv:
-        ground_truth = item[item.find(' = ')+3:item.rfind(' < ')]
-        title = item[:item.rfind(' = ')]
-        chroma = list(chroma)
-        lineWriter.writerow([title, ground_truth, chroma, result])
-        
+    #if results_to_csv:
+        #chroma = list(chroma)
+
     # MIREX EVALUATION:
     # ================
     if analysis_mode == 'title':
@@ -238,6 +235,9 @@ for item in analysis_files:
         if verbose and confidence < confidence_threshold:
             print item[:item.rfind(' = ')]
             print 'G:', ground_truth, '|| P:',
+        if results_to_csv:
+            title = item[:item.rfind(' = ')]
+            lineWriter.writerow([title, ground_truth, chroma, result])
         ground_truth = key_to_list(ground_truth)
         estimation = key_to_list(result)
         score = mirex_score(ground_truth, estimation)
@@ -248,6 +248,8 @@ for item in analysis_files:
         if filename_to_match in groundtruth_files:
             groundtruth_file = open(groundtruth_folder+'/'+filename_to_match, 'r')
             ground_truth = groundtruth_file.readline()
+            if results_to_csv:
+                lineWriter.writerow([filename_to_match, ground_truth, chroma, result])
             ground_truth = key_to_list(ground_truth)
             estimation = key_to_list(result)
             score = mirex_score(ground_truth, estimation)
@@ -269,10 +271,10 @@ for item in analysis_files:
         with open(temp_folder + '/' + item[:-3]+'txt', 'w') as textfile:
             textfile.write(result)
             textfile.close()
-            
+
 if results_to_csv:
     csvFile.close()
-    
+
 print len(mirex_scores), "files analysed.\n"
 if confusion_matrix:
     matrix = np.matrix(matrix)
