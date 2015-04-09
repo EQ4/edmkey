@@ -24,7 +24,7 @@ Besides common python libraries, this script depends on a module named
 
 # WHAT TO ANALYSE
 # ===============
-analysis_mode = 'title' # {'txt', 'title'}
+analysis_mode = 'txt' # {'txt', 'title'}
 
 if analysis_mode == 'title':
     collection     = ['GSANG']# ['KF100', 'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60'] # ['KF100', 'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60']
@@ -237,7 +237,8 @@ for item in analysis_files:
             print 'G:', ground_truth, '|| P:',
         if results_to_csv:
             title = item[:item.rfind(' = ')]
-            lineWriter.writerow([title, ground_truth, chroma, result])
+            # THIS IS A TEMPORARY SOLUTION... it should be improved!
+            lineWriter.writerow([title, ground_truth, chroma[0], chroma[1], chroma[2], chroma[3], chroma[4], chroma[5], chroma[6], chroma[7], chroma[8], chroma[9], chroma[10], chroma[11], chroma[12], chroma[13], chroma[14], chroma[15], chroma[16], chroma[17], chroma[18], chroma[19], chroma[20], chroma[21], chroma[22], chroma[23], chroma[24], chroma[25], chroma[26], chroma[27], chroma[28], chroma[29], chroma[30], chroma[31], chroma[32], chroma[33], chroma[34], chroma[35], result])
         ground_truth = key_to_list(ground_truth)
         estimation = key_to_list(result)
         score = mirex_score(ground_truth, estimation)
@@ -251,7 +252,7 @@ for item in analysis_files:
             if results_to_csv:
                 # lineWriter.writerow([filename_to_match, ground_truth, chroma, result])
                 # THIS IS A TEMPORARY SOLUTION... it should be improved!
-                lineWriter.writerow([filename_to_match, ground_truth, chroma[0], chroma[1], chroma[2], chroma[3], chroma[4], chroma[5], chroma[6], chroma[7], chroma[8], chroma[9], chroma[10], chroma[11], chroma[12], chroma[13], chroma[14], chroma[15], chroma[16], chroma[17], chroma[18], chroma[19], chroma[20], chroma[21], chroma[22], chroma[23], chroma[24], chroma[25], chroma[26], chroma[27], chroma[28], chroma[29], chroma[30], chroma[31], chroma[32], chroma[33], chroma[34], chroma[35], result])
+                lineWriter.writerow([filename_to_match, chroma[0], chroma[1], chroma[2], chroma[3], chroma[4], chroma[5], chroma[6], chroma[7], chroma[8], chroma[9], chroma[10], chroma[11], chroma[12], chroma[13], chroma[14], chroma[15], chroma[16], chroma[17], chroma[18], chroma[19], chroma[20], chroma[21], chroma[22], chroma[23], chroma[24], chroma[25], chroma[26], chroma[27], chroma[28], chroma[29], chroma[30], chroma[31], chroma[32], chroma[33], chroma[34], chroma[35], result])
             ground_truth = key_to_list(ground_truth)
             estimation = key_to_list(result)
             score = mirex_score(ground_truth, estimation)
