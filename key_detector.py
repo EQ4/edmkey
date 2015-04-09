@@ -225,8 +225,8 @@ for item in analysis_files:
     estimation = key(chroma.tolist())
     result = estimation[0] + ' ' + estimation[1]
     confidence = estimation[2]
-    #if results_to_csv:
-        #chroma = list(chroma)
+    if results_to_csv:
+        chroma = list(chroma)
 
     # MIREX EVALUATION:
     # ================
@@ -249,7 +249,9 @@ for item in analysis_files:
             groundtruth_file = open(groundtruth_folder+'/'+filename_to_match, 'r')
             ground_truth = groundtruth_file.readline()
             if results_to_csv:
-                lineWriter.writerow([filename_to_match, ground_truth, chroma, result])
+                # lineWriter.writerow([filename_to_match, ground_truth, chroma, result])
+                # THIS IS A TEMPORARY SOLUTION... it should be improved!
+                lineWriter.writerow([filename_to_match, ground_truth, chroma[0], chroma[1], chroma[2], chroma[3], chroma[4], chroma[5], chroma[6], chroma[7], chroma[8], chroma[9], chroma[10], chroma[11], chroma[12], chroma[13], chroma[14], chroma[15], chroma[16], chroma[17], chroma[18], chroma[19], chroma[20], chroma[21], chroma[22], chroma[23], chroma[24], chroma[25], chroma[26], chroma[27], chroma[28], chroma[29], chroma[30], chroma[31], chroma[32], chroma[33], chroma[34], chroma[35], result])
             ground_truth = key_to_list(ground_truth)
             estimation = key_to_list(result)
             score = mirex_score(ground_truth, estimation)
