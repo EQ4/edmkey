@@ -6,16 +6,16 @@
 analysis_mode = 'title' # {'txt', 'title'}
 
 if analysis_mode == 'title':
-    collection     = ['KF100', 'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60'] # ['KF100', 'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60'] 
+    collection     = ['KF100', 'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60'] # ['KF100', 'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60']
     genre          = ['edm'] # ['edm', 'non-edm']
-    modality       = ['minor'] # ['major', 'minor']
+    modality       = ['major'] # ['major', 'minor']
     limit_analysis = 0 # Limit analysis to N random tracks. 0 = all samples matching above criteria.
-    
+
 # ANALYSIS PARAMETERS
 # ===================
 # ángel:
 avoid_edges          = 0 # % of duration at the beginning and end that is not analysed.
-first_n_secs         = 0 # only analyse the first N seconds of each track
+first_n_secs         = 0 # only analyse the first N seconds of each track (0 full)
 shift_spectrum       = True
 spectral_whitening   = True
 weight_duration      = False
@@ -49,7 +49,7 @@ weight_window_size   = 1 # semitones
 tuning_resolution = (hpcp_size / 12)
 
 
-# /////////////////////////////////////////////////////////////////////////////////////////
+# /////////////////////////////////////////////////////////////////////////////////
 
 # IO
 # ==
@@ -62,7 +62,7 @@ if analysis_mode == 'txt':
     except:
         print "ERROR! In 'txt' mode you should provide two arguments:"
         print "filename.py <route to audio> <route to ground-truth annotations>\n"
-        sys.exit()   
+        sys.exit()
 elif analysis_mode == 'title':
     try:
         audio_folder = sys.argv[1]
@@ -116,11 +116,11 @@ if analysis_mode == 'title':
         print "taking", limit_analysis, "random samples...\n"
 else:
     analysis_files = os.listdir(audio_folder)
-    if '.DS_Store' in analysis_files: 
+    if '.DS_Store' in analysis_files:
         analysis_files.remove('.DS_Store')
     print len(analysis_files), '\nsongs in folder.\n'
     groundtruth_files = os.listdir(groundtruth_folder)
-    if '.DS_Store' in groundtruth_files: 
+    if '.DS_Store' in groundtruth_files:
         groundtruth_files.remove('.DS_Store')
 
 # ANALYSIS
@@ -129,21 +129,21 @@ song_chromas = []
 for item in analysis_files:
     loader = estd.MonoLoader(filename=audio_folder+'/'+item,
     						 sampleRate=sample_rate)
-    cut    = estd.FrameCutter(frameSize=window_size, 
+    cut    = estd.FrameCutter(frameSize=window_size,
                               hopSize=hop_size)
     window = estd.Windowing(size=window_size,
                             type=window_type)
     rfft   = estd.Spectrum(size=window_size)
-    sw     = estd.SpectralWhitening(maxFrequency=max_frequency, 
+    sw     = estd.SpectralWhitening(maxFrequency=max_frequency,
                                     sampleRate=sample_rate)
     speaks = estd.SpectralPeaks(magnitudeThreshold=magnitude_threshold,
                                 maxFrequency=max_frequency,
                                 minFrequency=min_frequency,
                                 maxPeaks=max_peaks,
                                 sampleRate=sample_rate)
-    hpcp   = estd.HPCP(bandPreset=band_preset, 
-                       harmonics=harmonics, 
-                       maxFrequency=max_frequency, 
+    hpcp   = estd.HPCP(bandPreset=band_preset,
+                       harmonics=harmonics,
+                       maxFrequency=max_frequency,
                        minFrequency=min_frequency,
                        nonLinear=non_linear,
                        normalized=normalize,
@@ -160,7 +160,7 @@ for item in analysis_files:
     if first_n_secs > 0:
         if duration > (first_n_secs * sample_rate):
             audio = audio[:first_n_secs * sample_rate]
-            duration = len(audio)    
+            duration = len(audio)
     if avoid_edges > 0:
         initial_sample = (avoid_edges * duration) / 100
         final_sample = duration - initial_sample
@@ -182,9 +182,9 @@ for item in analysis_files:
 
 
 
-hpcp_mean = np.mean(song_chromas, axis=0) # mean or median??
+hpcp_mean = np.median(song_chromas, axis=0) # mean or median??
 print "hpcp_mean:", hpcp_mean
-hpcp_std = np.std(song_chromas, axis=0) # mean or median??
+hpcp_std = np.std(song_chromas, axis=0)
 print "hpcp_std:", hpcp_std
 
 normfactor = np.sum(hpcp_mean)
@@ -199,18 +199,16 @@ plt.xlim([-0.5,12.5])
 plt.show()
 
 
-
 """
 # reduce 36 to 12:
 simplified = []
 for i in range(len(m)):
 	n = i % 3
 	if n == 0:
-		simplified.append(m[i])	
+		simplified.append(m[i])
 
 plt.plot(range(12),simplified)
 plt.ylim([0,1])
 plt.xlim([-0.5,12.5])
 plt.show()
 """
-
