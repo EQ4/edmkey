@@ -8,6 +8,7 @@ This script evaluates the key estimation task according to the mirex standard.
 """
 verbose          = True
 confusion_matrix = True
+results_to_file  = True
 
 import sys
 
@@ -36,11 +37,11 @@ if '.DS_Store' in estimations_list:
 # run the evaluation algorithm
 # ============================
 print "\n...EVALUATING..."
-if verbose: 
-    print "\nresults for individual songs:" 
-    print "-----------------------------" 
+if verbose:
+    print "\nresults for individual songs:"
+    print "-----------------------------"
 
-if confusion_matrix: 
+if confusion_matrix:
     matrix = 24 * 24 * [0]
 
 list_of_results = []
@@ -59,7 +60,7 @@ for i in range(len(ground_truth_list)):
         matrix[(xpos+ypos)] =+ matrix[(xpos+ypos)] + 1
     ground_truth_file.close()
     estimation_file.close()
-    
+
 evaluation_results = mirex_evaluation(list_of_results)
 
 if confusion_matrix:

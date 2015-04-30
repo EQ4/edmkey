@@ -79,7 +79,7 @@ slope                = 0.2 # when use_polyphony == True
 
 # LOAD MODULES
 # ============
-import sys, os, re
+import sys, os
 import essentia as e
 import essentia.standard as estd
 from key_tools import *
@@ -88,7 +88,7 @@ from time import time as tiempo
 from time import clock as reloj
 
 
-def key_detector():
+def key_detector_2():
     reloj()
     # create directory to write the results with an unique time id:
     if results_to_file:
@@ -198,10 +198,12 @@ def key_detector():
             vector = hpcp(p1,p2)
             sum_vector = np.sum(vector)
             if sum_vector > 0:
+                if shift_spectrum:
+                    vector = shift_vector(vector, hpcp_size)
                 chroma.append(vector)
         chroma = np.mean(chroma, axis=0)
-        if shift_spectrum:
-            chroma = shift_vector(chroma, hpcp_size)
+        #if shift_spectrum:
+        #    chroma = shift_vector(chroma, hpcp_size)
         estimation = key(chroma.tolist())
         result = estimation[0] + ' ' + estimation[1]
         confidence = estimation[2]
@@ -228,8 +230,6 @@ def key_detector():
             if filename_to_match in groundtruth_files:
                 groundtruth_file = open(groundtruth_folder+'/'+filename_to_match, 'r')
                 ground_truth = groundtruth_file.readline()
-                if "\t" in ground_truth:
-                    ground_truth = re.sub("\t", " ", ground_truth)
                 if results_to_csv:
                     # lineWriter.writerow([filename_to_match, ground_truth, chroma, result])
                     # THIS IS A TEMPORARY SOLUTION... it should be improved!
@@ -304,4 +304,4 @@ if __name__ == "__main__":
     else:
         print "Unrecognised analysis mode. It should be either 'txt' or 'title'."
         sys.exit()
-    key_detector()
+    key_detector_2()
