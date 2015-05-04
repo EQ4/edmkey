@@ -47,12 +47,17 @@ if confusion_matrix:
 list_of_results = []
 
 for i in range(len(ground_truth_list)):
-    ground_truth_file = open(ground_truth_route+'/'+ground_truth_list[i], 'r')
+    ground_truth_file = open(ground_truth_route + '/' + ground_truth_list[i], 'r')
     ground_truth = key_to_list(ground_truth_file.readline())
+    gt_filename = ground_truth_list[i][:ground_truth_list[i].rfind('.')]
     estimation_file = open(estimations_route+'/'+estimations_list[i], 'r')
     estimation = key_to_list(estimation_file.readline())
-    score = mirex_score(ground_truth, estimation)
-    if verbose: print i+1, '- Prediction:', estimation, '- Ground-Truth:', ground_truth, '- Score:', score
+    es_filename = estimations_list[i][:estimations_list[i].rfind('.')]
+    if es_filename == gt_filename:
+        score = mirex_score(ground_truth, estimation)
+    else:
+        print "ground-truth and estimation do not match. SKIPPING"
+    if verbose: print "%03d" % (i+1,), '- est:', estimation, '\tgt:', ground_truth, '\tScore:', score
     list_of_results.append(score)
     if confusion_matrix:
         xpos = (ground_truth[0] + (ground_truth[0] * 24)) + (-1*(ground_truth[1]-1) * 24 * 12)
@@ -70,7 +75,7 @@ if confusion_matrix:
     if results_to_file:
         np.savetxt(estimations_route + '/_confusion_matrix.csv', matrix, fmt='%i', delimiter=',', header='C,C#,D,Eb,E,F,F#,G,G#,A,Bb,B,Cm,C#m,Dm,Ebm,Em,Fm,F#m,Gm,G#m,Am,Bbm,Bm')
 
-results_for_file = "\nEVALUATION RESULTS\n==================\nCorrect: "+str(evaluation_results[0])+"\nFifth:  "+str(evaluation_results[1])+"\nRelative: "+str(evaluation_results[2])+"\nParallel: "+str(evaluation_results[3])+"\nError: "+str(evaluation_results[4])+"Weighted: "+str(evaluation_results[5])
+results_for_file = "\nEVALUATION RESULTS\n==================\nCorrect: " + str(evaluation_results[0]) + "\nFifth: " + str(evaluation_results[1])+"\nRelative: " + str(evaluation_results[2]) + "\nParallel: " + str(evaluation_results[3]) + "\nError: " + str(evaluation_results[4]) + "\nWeighted: " + str(evaluation_results[5])
 
 writeResults = open(estimations_route+'/_EvaluationResults.txt', 'w')
 writeResults.write(results_for_file)

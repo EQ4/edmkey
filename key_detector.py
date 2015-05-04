@@ -24,7 +24,7 @@ Besides common python libraries, this script depends on a module named
 
 # WHAT TO ANALYSE
 # ===============
-analysis_mode = 'title' # {'txt', 'title'}
+analysis_mode = 'txt' # {'txt', 'title'}
 
 if analysis_mode == 'title':
     collection     = ['KF100', 'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60'] # ['KF100', 'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60']
@@ -40,6 +40,7 @@ first_n_secs         = 0 # only analyse the first N seconds of each track
 skip_first_minute    = False
 spectral_whitening   = True
 shift_spectrum       = True
+shift_scope          = 'average' # ['average', 'frame']
 
 # print and verbose:
 verbose              = True
@@ -198,9 +199,15 @@ def key_detector():
             vector = hpcp(p1,p2)
             sum_vector = np.sum(vector)
             if sum_vector > 0:
-                chroma.append(vector)
+                if shift_spectrum == False or shift_scope == 'average':
+                    chroma.append(vector)
+                elif shift_spectrum and shift_scope == 'frame':
+                    vector = shift_vector(vector, hpcp_size)
+                    chroma.append(vector)
+                else:
+                    print "shift_scope must be set to 'frame' or 'average'"
         chroma = np.mean(chroma, axis=0)
-        if shift_spectrum:
+        if shift_spectrum and shift_scope == 'average':
             chroma = shift_vector(chroma, hpcp_size)
         estimation = key(chroma.tolist())
         result = estimation[0] + ' ' + estimation[1]

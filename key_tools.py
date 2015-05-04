@@ -24,7 +24,7 @@ name2class = {'B#':0,'C':0,
               'A':9,
               'A#':10,'Bb':10,
               'B':11,'Cb':11,
-              'silence': 12}
+              'none': 12}
 
 mode2num = {'minor':0,
             'min':0,
@@ -36,8 +36,7 @@ mode2num = {'minor':0,
             'major':1,
             'maj':1,
             'mix':1,
-            'lyd': 1,
-            'None': 1}
+            'lyd': 1}
 
 # Functions
 # =========
