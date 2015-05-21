@@ -25,8 +25,13 @@ Besides common python libraries, this script depends on a module named
 # WHAT TO ANALYSE
 # ===============
 analysis_mode = 'txt' # {'txt', 'title'}
+# I should find a standardized way of analysing... I like the fact that we can
+# analyse per collection, based on the criteria below, and also that everything
+# is kept on the same folder...
 
 if analysis_mode == 'title':
+    # for both collection and genre, I have to come up with a method that analy-
+    # ses everything if nothing is specified...
     collection     = ['KF100', 'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60'] # ['KF100', 'KF1000', 'GSANG', 'ENDO100', 'DJTECHTOOLS60']
     genre          = ['edm'] # ['edm', 'non-edm']
     modality       = ['minor', 'major'] # ['major', 'minor']
@@ -52,6 +57,7 @@ confidence_threshold = 1
 sample_rate          = 44100
 window_size          = 4096
 jump_frames          = 4 # 1 = analyse every frame; 2 = analyse every other frame; etc.
+random_frames        = [1, 5] # range of random generator for analysing frames...
 hop_size             = window_size * jump_frames
 window_type          = 'hann'
 min_frequency        = 25
@@ -84,7 +90,7 @@ import sys, os, re
 import essentia as e
 import essentia.standard as estd
 from key_tools import *
-from random import sample
+from random import sample, randint
 from time import time as tiempo
 from time import clock as reloj
 
