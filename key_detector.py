@@ -37,11 +37,36 @@ if analysis_mode == 'title':
     modality       = ['minor', 'major'] # ['major', 'minor']
     limit_analysis = 0 # Limit analysis to N random tracks. 0 = all samples matching above criteria.
 
+"""
+Settings for Classical Music:
+==========================
+spectral_whitening   = False
+window_size          = 2048
+jump_frames          = 4
+min_frequency        = 25
+max_frequency        = 1000
+profile_type         = 'temperley2005'
+
+'temperley2005 works better with spectral whitening on.
+Others, like 'noland' and 'temperley' perform better with max_frequency = 1700
+and without spectral whitening
+
+Setiings for EDM:
+=================
+spectral_whitening   = True
+shift_spectrum       = True
+window_size          = 4096
+jump_frames          = 4
+min_frequency        = 25
+max_frequency        = 3500
+profile_type         = 'edmm'
+
+"""
 # ANALYSIS PARAMETERS
 # ===================
 # faraldo:
 avoid_edges          = 0 # % of duration at the beginning and end that is not analysed.
-first_n_secs         = 0 # only analyse the first N seconds of each track
+first_n_secs         = 0 # only analyse the first N seconds of each track (o = full track)
 skip_first_minute    = False
 spectral_whitening   = True
 shift_spectrum       = True
@@ -76,7 +101,7 @@ hpcp_size            = 36
 weight_type          = "squaredCosine" # {none, cosine or squaredCosine}
 weight_window_size   = 1 # semitones
 # key detector:
-profile_type         = 'edmm'
+profile_type         = 'temperley2005'
 use_three_chords     = False # BEWARE: False executes the extra code including all triads!
 use_polyphony        = False
 num_harmonics        = 15  # when use_polyphony == True
