@@ -12,22 +12,22 @@ import numpy as np
 # Dictionaries
 # ============
 
-name2class = {'B#':0,'C':0,
-              'C#':1,'Db':1,
+name2class = {'B#':0,  'C':0,
+              'C#':1,  'Db':1,
               'D':2,
-              'D#':3,'Eb':3,
-              'E':4,'Fb':4,
-              'E#':5,'F':5,
-              'F#':6,'Gb':6,
+              'D#':3,  'Eb':3,
+              'E':4,   'Fb':4,
+              'E#':5,  'F':5,
+              'F#':6,  'Gb':6,
               'G':7,
-              'G#':8,'Ab':8,
+              'G#':8,  'Ab':8,
               'A':9,
-              'A#':10,'Bb':10,
-              'B':11,'Cb':11,
+              'A#':10, 'Bb':10,
+              'B':11,  'Cb':11,
               'none': 12}
 
-mode2num = {'minor':0,
-            'min':0,
+mode2num = {'minor': 0,
+            'min': 0,
             'aeolian': 0,
             'dorian': 0,
             'dor': 0,
@@ -42,19 +42,19 @@ mode2num = {'minor':0,
 # =========
 
 def name_to_class(key):
-    "converts a pitch name into its pitch-class value (c=0,...,b=11)"
+    """converts a pitch name into its pitch-class value (c=0,...,b=11)"""
     return name2class[key]
 
 
 
 def mode_to_num(mode):
-    "converts a chord type into an arbitrary numeric value (maj = 1, min = 0)"
+    """converts a chord type into an arbitrary numeric value (maj = 1, min = 0)"""
     return mode2num[mode]
 
 
 
 def key_to_list(key):
-	"converts a key (i.e. C major) type into a numeric list containing [tonal center, mode] using the name_to_class and mode_to_num functions"
+	"""converts a key (i.e. C major) type into a numeric list containing [tonal center, mode] using the name_to_class and mode_to_num functions"""
 	key = key.split(' ')
 	key[-1] = key[-1].strip()
 	if len(key) == 1:
@@ -66,7 +66,9 @@ def key_to_list(key):
 
 
 def mirex_score(ground_truth, estimation):
-	"performs an evaluation of the key estimation according to the MIREX competition, assigning a 1 to correctly identified keys, 0.5 to keys at a distance of a perfect fifth, 0.3 to relative keys, 0.2 to parallel keys and 0 to other tyoes of errors."
+	"""performs an evaluation of the key estimation according to the MIREX competition,
+	assigning a 1 to correctly identified keys, 0.5 to keys at a distance of a perfect fifth,
+	0.3 to relative keys, 0.2 to parallel keys and 0 to other tyoes of errors."""
 	if estimation[0] == ground_truth[0] and estimation[1] == ground_truth[1]:
 		score = 1 # perfect match
 	elif estimation[0] == ground_truth[0] and estimation[1]+ground_truth[1] == 1:
@@ -112,7 +114,7 @@ def mirex_evaluation(list_with_weighted_results):
 
 
 def shift_vector(hpcp, hpcp_size=12):
-    "shifts the spectrum to the nearest tempered bin"
+    """shifts the spectrum to the nearest tempered bin"""
     tuning_resolution = hpcp_size / 12
     max_val = np.max(hpcp)
     if max_val <= 0:
