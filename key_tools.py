@@ -113,11 +113,11 @@ def mirex_evaluation(list_with_weighted_results):
     error = results[4] / l
     weighted = np.mean(list_with_weighted_results)
     print "\nCorrect ", correct
-    print "Fifth   ", fifth
-    print "Relative", relative
-    print "Parallel", parallel
-    print "Error   ", error
-    print "Weighted", weighted
+    print "\nFifth     ", fifth
+    print "\nRelative  ", relative
+    print "\nParallel  ", parallel
+    print "\nError     ", error
+    print "\nWeighted  ", weighted
     return [correct, fifth, relative, parallel, error, weighted]
 
 
