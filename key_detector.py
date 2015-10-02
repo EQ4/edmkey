@@ -24,7 +24,7 @@ Besides common python libraries, this script depends on a module named
 
 # WHAT TO ANALYSE
 # ===============
-analysis_mode = 'txt' # {'txt', 'title'}
+analysis_mode = 'title' # {'txt', 'title'}
 # I should find a standardized way of analysing... I like the fact that we can
 # analyse per collection, based on the criteria below, and also that everything
 # is kept on the same folder...
@@ -65,24 +65,24 @@ profile_type         = 'edmm'
 # ANALYSIS PARAMETERS
 # ===================
 # faraldo:
-avoid_edges          = 0 # % of duration at the beginning and end that is not analysed.
-first_n_secs         = 0 # only analyse the first N seconds of each track (o = full track)
+avoid_edges          = 0  # % of duration at the beginning and end that is not analysed.
+first_n_secs         = 0  # only analyse the first N seconds of each track (o = full track)
 skip_first_minute    = False
 spectral_whitening   = True
 shift_spectrum       = True
-shift_scope          = 'average' # ['average', 'frame']
+shift_scope          = 'average'  # ['average', 'frame']
 
 # print and verbose:
 verbose              = True
 confusion_matrix     = True
-results_to_file      = True
-results_to_csv       = True
+results_to_file      = False
+results_to_csv       = False
 confidence_threshold = 1
 # global:
 sample_rate          = 44100
 window_size          = 4096
-jump_frames          = 4 # 1 = analyse every frame; 2 = analyse every other frame; etc.
-random_frames        = [1, 5] # range of random generator for analysing frames...
+jump_frames          = 4  # 1 = analyse every frame; 2 = analyse every other frame; etc.
+random_frames        = [1, 5]  # range of random generator for analysing frames...
 hop_size             = window_size * jump_frames
 window_type          = 'hann'
 min_frequency        = 25
@@ -98,14 +98,14 @@ non_linear           = True
 normalize            = True
 reference_frequency  = 440
 hpcp_size            = 36
-weight_type          = "squaredCosine" # {none, cosine or squaredCosine}
-weight_window_size   = 1 # semitones
+weight_type          = "squaredCosine"  # {none, cosine or squaredCosine}
+weight_window_size   = 1  # semitones
 # key detector:
-profile_type         = 'temperley2005'
-use_three_chords     = False # BEWARE: False executes the extra code including all triads!
+profile_type         = 'edmm'
+use_three_chords     = False  # BEWARE: False executes the extra code including all triads!
 use_polyphony        = False
-num_harmonics        = 15  # when use_polyphony == True
-slope                = 0.2 # when use_polyphony == True
+num_harmonics        = 15   # when use_polyphony == True
+slope                = 0.2  # when use_polyphony == True
 
 # ////////////////////////////////////////////////////////////////////////////
 
@@ -123,15 +123,15 @@ from time import clock as reloj
 def key_detector():
     reloj()
     # create directory to write the results with an unique time id:
-    if results_to_file:
+    if results_to_file or results_to_csv:
         uniqueTime = str(int(tiempo()))
         wd = os.getcwd()
         temp_folder = wd + '/KeyDetection_'+uniqueTime
         os.mkdir(temp_folder)
-        if results_to_csv:
-            import csv
-            csvFile = open(temp_folder + '/_estimation&hpcp.csv', 'w')
-            lineWriter = csv.writer(csvFile, delimiter=',')
+    if results_to_csv:
+        import csv
+        csvFile = open(temp_folder + '/Estimation_&_PCP.csv', 'w')
+        lineWriter = csv.writer(csvFile, delimiter=',')
     # retrieve files and filenames according to the desired settings:
     if analysis_mode == 'title':
         allfiles = os.listdir(audio_folder)
@@ -254,7 +254,6 @@ def key_detector():
                 print 'G:', ground_truth, '|| P:',
             if results_to_csv:
                 title = item[:item.rfind(' = ')]
-                # THIS IS A TEMPORARY SOLUTION... it should be improved!
                 lineWriter.writerow([title, ground_truth, chroma[0], chroma[1], chroma[2], chroma[3], chroma[4], chroma[5], chroma[6], chroma[7], chroma[8], chroma[9], chroma[10], chroma[11], chroma[12], chroma[13], chroma[14], chroma[15], chroma[16], chroma[17], chroma[18], chroma[19], chroma[20], chroma[21], chroma[22], chroma[23], chroma[24], chroma[25], chroma[26], chroma[27], chroma[28], chroma[29], chroma[30], chroma[31], chroma[32], chroma[33], chroma[34], chroma[35], result])
             ground_truth = key_to_list(ground_truth)
             estimation = key_to_list(result)
@@ -269,8 +268,6 @@ def key_detector():
                 if "\t" in ground_truth:
                     ground_truth = re.sub("\t", " ", ground_truth)
                 if results_to_csv:
-                    # lineWriter.writerow([filename_to_match, ground_truth, chroma, result])
-                    # THIS IS A TEMPORARY SOLUTION... it should be improved!
                     lineWriter.writerow([filename_to_match, chroma[0], chroma[1], chroma[2], chroma[3], chroma[4], chroma[5], chroma[6], chroma[7], chroma[8], chroma[9], chroma[10], chroma[11], chroma[12], chroma[13], chroma[14], chroma[15], chroma[16], chroma[17], chroma[18], chroma[19], chroma[20], chroma[21], chroma[22], chroma[23], chroma[24], chroma[25], chroma[26], chroma[27], chroma[28], chroma[29], chroma[30], chroma[31], chroma[32], chroma[33], chroma[34], chroma[35], result])
                 ground_truth = key_to_list(ground_truth)
                 estimation = key_to_list(result)
